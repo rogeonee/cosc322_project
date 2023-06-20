@@ -88,7 +88,7 @@ def depthFirstSearch(problem: SearchProblem):
     """
     "*** YOUR CODE HERE ***"
     # util.raiseNotDefined()
-    
+
     stack = util.Stack()
     stack.push((problem.getStartState(), []))
     visited = set()
@@ -138,7 +138,30 @@ def breadthFirstSearch(problem: SearchProblem):
 def uniformCostSearch(problem: SearchProblem):
     """Search the node of least total cost first."""
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    # util.raiseNotDefined()
+
+    queue = util.PriorityQueue()  # Priority queue to store states
+    queue.push((problem.getStartState(), [], 0), 0)  # Push the initial state with empty steps and cost 0
+    visited = set()  # Keep track of visited states
+
+    while not queue.isEmpty():
+        currState, steps, cost = queue.pop()  # Get the state from the front of the queue
+
+        if currState in visited:
+            continue
+
+        if problem.isGoalState(currState):
+            return steps  # Return the steps if it is a goal state
+
+        visited.add(currState)  # Add the current state to the visited set
+
+        # Check successors of the current state
+        for state, action, step_cost in problem.getSuccessors(currState):
+            queue.push((state, steps + [action], cost + step_cost), cost + step_cost)
+            # Push the successor state with updated steps and cost into queue,
+            # with priority based on the updated cost
+
+    return []  # Return an empty list if no path to the goal state is found
 
 def nullHeuristic(state, problem=None):
     """
