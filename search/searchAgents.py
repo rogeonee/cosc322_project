@@ -492,7 +492,15 @@ def foodHeuristic(state: Tuple[Tuple, List[List]], problem: FoodSearchProblem):
     """
     position, foodGrid = state
     "*** YOUR CODE HERE ***"
-    return 0
+    foodList = foodGrid.asList()
+
+    if len(foodList) == 0:
+        return 0
+
+    # Calculate the Manhattan distance to the nearest food pellet
+    minDistance = min(util.manhattanDistance(position, food) for food in foodList)
+
+    return minDistance
 
 class ClosestDotSearchAgent(SearchAgent):
     "Search for all food using a sequence of searches"
