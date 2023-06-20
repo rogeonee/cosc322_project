@@ -177,7 +177,32 @@ def nullHeuristic(state, problem=None):
 def aStarSearch(problem: SearchProblem, heuristic=nullHeuristic):
     """Search the node that has the lowest combined cost and heuristic first."""
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    # util.raiseNotDefined()
+
+    priority_queue = util.PriorityQueue()  # Priority queue to store states
+    start_state = problem.getStartState()
+    priority_queue.push((start_state, [], 0), 0 + heuristic(start_state, problem))  # Push the initial state with empty steps and cost 0 + heuristic
+    visited = set()  # Keep track of visited states
+
+    while not priority_queue.isEmpty():
+        current_state, steps, cost = priority_queue.pop()  # Extract the state, steps, and cost from the front of the queue
+
+        if current_state in visited:
+            continue  # Skip duplicate states
+
+        if problem.isGoalState(current_state):
+            return steps  # Return the steps if it is a goal state
+
+        visited.add(current_state)  # Mark the current state as visited
+
+        # Check successors of the current state
+        for successor_state, action, step_cost in problem.getSuccessors(current_state):
+            if successor_state not in visited:
+                total_cost = cost + step_cost  # Calculate total cost
+                priority = total_cost + heuristic(successor_state, problem)  # Calculate the priority with total cost and heuristic
+                priority_queue.push((successor_state, steps + [action], total_cost), priority)
+
+    return []  # Return an empty list if no path is found
 
 
 # Abbreviations
