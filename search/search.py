@@ -89,49 +89,53 @@ def depthFirstSearch(problem: SearchProblem):
     "*** YOUR CODE HERE ***"
     # util.raiseNotDefined()
 
-    stack = util.Stack()
-    stack.push((problem.getStartState(), []))
-    visited = set()
+    stack = util.Stack()  # A stack to store states and steps
+    stack.push((problem.getStartState(), []))  # Push the initial state into the stack
+    visited = set()  # Keep track of visited states
 
     while not stack.isEmpty():
-        currentState, steps = stack.pop()
+        currentState, steps = stack.pop()  # Get the current state and steps from the top
 
         if currentState in visited:
-            continue
+            continue  # Skip duplicate states
 
-        visited.add(currentState)
+        visited.add(currentState)  # Mark the current state as visited
 
         if problem.isGoalState(currentState):
-            return steps
-        
-        for state, action, cost in problem.getSuccessors(currentState):
-            stack.push((state, steps + [ action ]))
+            return steps  # Return the steps if it is a goal state
 
-    return []
+        # Check successors of the current state
+        for state, action, cost in problem.getSuccessors(currentState):
+            stack.push((state, steps + [action]))
+            # Push the successor state with updated steps into the stack
+
+    return []  # Return an empty list if no path is found
 
 def breadthFirstSearch(problem: SearchProblem):
     """Search the shallowest nodes in the search tree first."""
     "*** YOUR CODE HERE ***"
     # util.raiseNotDefined()
 
-    state_queue = util.Queue()
-    state_queue.push((problem.getStartState(), []))
-    visited = set()
+    state_queue = util.Queue()  # Queue to store states
+    state_queue.push((problem.getStartState(), []))  # Enqueue the initial state
+    visited = set()  # Keep track of visited states
 
     while not state_queue.isEmpty():
-        state, steps = state_queue.pop()
+        state, steps = state_queue.pop()  # Get the state from the front of the queue
 
         if state in visited:
-            continue
+            continue  # Skip duplicate states
 
-        visited.add(state)
+        visited.add(state)  # Mark the current state as visited
 
         if problem.isGoalState(state):
-            return steps
+            return steps  # Return the steps if it is a goal state
 
+        # Check successors of the current state
         for successor_state, action, cost in problem.getSuccessors(state):
             if successor_state not in visited:
                 state_queue.push((successor_state, steps + [action]))
+                # Enqueue the successor state with updated steps
 
     return []
 
@@ -153,7 +157,7 @@ def uniformCostSearch(problem: SearchProblem):
         if problem.isGoalState(currState):
             return steps  # Return the steps if it is a goal state
 
-        visited.add(currState)  # Add the current state to the visited set
+        visited.add(currState)  # Mark the current state as visited
 
         # Check successors of the current state
         for state, action, step_cost in problem.getSuccessors(currState):
@@ -161,7 +165,7 @@ def uniformCostSearch(problem: SearchProblem):
             # Push the successor state with updated steps and cost into queue,
             # with priority based on the updated cost
 
-    return []  # Return an empty list if no path to the goal state is found
+    return []  # Return an empty list if no path is found
 
 def nullHeuristic(state, problem=None):
     """
