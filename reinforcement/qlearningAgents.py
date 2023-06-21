@@ -109,7 +109,7 @@ class QLearningAgent(ReinforcementAgent):
         legalActions = self.getLegalActions(state)
         action = None
         "*** YOUR CODE HERE ***"
-        
+
         if len(legalActions) > 0:
           if util.flipCoin(self.epsilon):
               # Choose a random action with probability epsilon
@@ -197,14 +197,27 @@ class ApproximateQAgent(PacmanQAgent):
           where * is the dotProduct operator
         """
         "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
+        # Get the feature vector for the given state-action pair
+        featureVector = self.featExtractor.getFeatures(state, action)
+
+        # Compute the Q-value as the dot product of weights and feature values
+        qValue = 0
+        for feature, value in featureVector.items():
+            qValue += self.weights[feature] * value
+        return qValue
 
     def update(self, state, action, nextState, reward: float):
         """
            Should update your weights based on transition
         """
         "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
+        # Compute the difference term
+        difference = (reward + self.discount * self.getValue(nextState)) - self.getQValue(state, action)
+
+        # Update the weights
+        featureVector = self.featExtractor.getFeatures(state, action)
+        for feature, value in featureVector.items():
+            self.weights[feature] += self.alpha * difference * value
 
     def final(self, state):
         """Called at the end of each game."""
@@ -215,4 +228,8 @@ class ApproximateQAgent(PacmanQAgent):
         if self.episodesSoFar == self.numTraining:
             # you might want to print your weights here for debugging
             "*** YOUR CODE HERE ***"
-            pass
+
+            # Print the learned weights
+            print("Learned Weights:")
+            for feature, weight in self.weights.items():
+                print(feature, ": ", weight)
