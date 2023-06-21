@@ -64,11 +64,11 @@ class QLearningAgent(ReinforcementAgent):
         "*** YOUR CODE HERE ***"
         legalActions = self.getLegalActions(state)
 
-        # Check if there are no legal actions
+        # Check for no legal actions
         if not legalActions:
             return 0.0
 
-        # Compute the maximum Q-value among legal actions
+        # Compute the max Q-value among legal actions
         maxQValue = max([self.getQValue(state, action) for action in legalActions])
 
         return maxQValue
@@ -83,9 +83,16 @@ class QLearningAgent(ReinforcementAgent):
         legalActions = self.getLegalActions(state)
         if not legalActions:
             return None
+        # Compute Q-values for each legal action
         qValues = [self.getQValue(state, action) for action in legalActions]
+        
+        # Find the max Q-value
         maxQValue = max(qValues)
+        
+        # Get all actions with max Q-value
         bestActions = [action for action, qValue in zip(legalActions, qValues) if qValue == maxQValue]
+        
+        # Randomly choose one of the best
         return random.choice(bestActions)
 
     def getAction(self, state):
@@ -102,7 +109,14 @@ class QLearningAgent(ReinforcementAgent):
         legalActions = self.getLegalActions(state)
         action = None
         "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
+        
+        if len(legalActions) > 0:
+          if util.flipCoin(self.epsilon):
+              # Choose a random action with probability epsilon
+              action = random.choice(legalActions)
+          else:
+              # Choose the best policy action
+              action = self.getPolicy(state)
 
         return action
 
@@ -115,16 +129,14 @@ class QLearningAgent(ReinforcementAgent):
           it will be called on your behalf
         """
         "*** YOUR CODE HERE ***"
-        # Retrieve the current Q-value for the state-action pair
+        # Get the current Q-value for the state-action pair
         currentQValue = self.getQValue(state, action)
 
-        # Compute the maximum Q-value among possible actions in the next state
+        # Compute the max Q-value among possible actions in the next state
         nextQValue = self.computeValueFromQValues(nextState)
 
         # Update the Q-value based on the observed transition
         newQValue = (1 - self.alpha) * currentQValue + self.alpha * (reward + self.discount * nextQValue)
-
-        # Update the Q-value for the state-action pair
         self.values[(state, action)] = newQValue
 
     def getPolicy(self, state):
